@@ -2531,6 +2531,7 @@ class Gamma(PositiveContinuous):
     def _distr_parameters_for_repr(self):
         return ["alpha", "beta"]
 
+<<<<<<< HEAD
 
 @_logp.register(GammaRV)
 def gamma_logp(op, value, alpha, beta):

@@ -1364,7 +1364,6 @@ def categorical_logp(op, value, p, upper):
         Value(s) for which log-probability is calculated. If the log probabilities for multiple
         values are desired the values must be provided in a numpy array or `TensorVariable`
 
-<<<<<<< HEAD
     """
     p = p_ / aet.sum(p_, axis=-1, keepdims=True)
     k = aet.shape(p_)[-1]
