@@ -824,15 +824,15 @@ from pymc3.distributions.multivariate import (
     WishartBartlett,
 )
 from pymc3.distributions.simulator import Simulator
+from pymc3.distributions.timeseries import (
+    AR,
+    AR1,
+    GARCH11,
+    GaussianRandomWalk,
+    MvGaussianRandomWalk,
+    MvStudentTRandomWalk,
+)
 
-# from pymc3.distributions.timeseries import (
-#     AR,
-#     AR1,
-#     GARCH11,
-#     GaussianRandomWalk,
-#     MvGaussianRandomWalk,
-#     MvStudentTRandomWalk,
-# )
 __all__ = [
     "Uniform",
     "Flat",
@@ -890,13 +890,13 @@ __all__ = [
     "WishartBartlett",
     "LKJCholeskyCov",
     "LKJCorr",
-    # "AR1",
-    # "AR",
+    "AR1",
+    "AR",
     "AsymmetricLaplace",
-    # "GaussianRandomWalk",
-    # "MvGaussianRandomWalk",
-    # "MvStudentTRandomWalk",
-    # "GARCH11",
+    "GaussianRandomWalk",
+    "MvGaussianRandomWalk",
+    "MvStudentTRandomWalk",
+    "GARCH11",
     "SkewNormal",
     "Mixture",
     "NormalMixture",
