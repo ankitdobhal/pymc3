@@ -17,7 +17,7 @@ from typing import (  # pylint: disable=unused-import
 import numpy as np
 import xarray as xr
 
-from aesara.gof.graph import ancestors
+from aesara.graph.basic import ancestors
 from aesara.tensor.var import TensorVariable
 from arviz import InferenceData, concat, rcParams
 from arviz.data.base import CoordSpec, DimSpec, dict_to_dataset, requires
@@ -25,7 +25,6 @@ from arviz.data.base import CoordSpec, DimSpec, dict_to_dataset, requires
 import pymc3
 
 from pymc3.model import modelcontext
-from pymc3.sampling import _DefaultTrace
 from pymc3.util import get_default_varnames
 
 if TYPE_CHECKING:
@@ -40,6 +39,61 @@ _log = logging.getLogger("pymc3")
 
 # random variable object ...
 Var = Any  # pylint: disable=invalid-name
+
+
+class _DefaultTrace:
+    """
+    Utility for collecting samples into a dictionary.
+
+    Name comes from its similarity to ``defaultdict``:
+    entries are lazily created.
+
+    Parameters
+    ----------
+    samples : int
+        The number of samples that will be collected, per variable,
+        into the trace.
+
+    Attributes
+    ----------
+    trace_dict : Dict[str, np.ndarray]
+        A dictionary constituting a trace.  Should be extracted
+        after a procedure has filled the `_DefaultTrace` using the
+        `insert()` method
+    """
+
+    trace_dict: Dict[str, np.ndarray] = {}
+    _len: Optional[int] = None
+
+    def __init__(self, samples: int):
+        self._len = samples
+        self.trace_dict = {}
+
+    def insert(self, k: str, v, idx: int):
+        """
+        Insert `v` as the value of the `idx`th sample for the variable `k`.
+
+        Parameters
+        ----------
+        k: str
+            Name of the variable.
+        v: anything that can go into a numpy array (including a numpy array)
+            The value of the `idx`th sample from variable `k`
+        ids: int
+            The index of the sample we are inserting into the trace.
+        """
+        value_shape = np.shape(v)
+
+        # initialize if necessary
+        if k not in self.trace_dict:
+            array_shape = (self._len,) + value_shape
+            self.trace_dict[k] = np.empty(array_shape, dtype=np.array(v).dtype)
+
+        # do the actual insertion
+        if value_shape == ():
+            self.trace_dict[k][idx] = v
+        else:
+            self.trace_dict[k][idx, :] = v
 
 
 class InferenceDataConverter:  # pylint: disable=too-many-instance-attributes
